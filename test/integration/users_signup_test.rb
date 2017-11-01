@@ -31,8 +31,10 @@ test "valid signup information" do
      end
      follow_redirect!
      assert_template 'users/show'
-	 assert_select 'div .alert-success' 
-	 assert_not flash.empty?    
+	   assert_select 'div .alert-success' 
+	   assert_not flash.empty?    
+     assert is_logged_in?
+     
    end
 
    
