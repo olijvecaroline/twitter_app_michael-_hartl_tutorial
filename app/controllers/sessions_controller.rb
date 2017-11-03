@@ -3,13 +3,11 @@ class SessionsController < ApplicationController
   end
 
   def create
-  	user = User.find_by(email: params[:session][:email].downcase)
-  	if user && user.authenticate(params[:session][:password])
-  		log_in(user)
-
-      	redirect_to current_user
-  		
-  	
+  	@user = User.find_by(email: params[:session][:email].downcase)
+  	if @user && @user.authenticate(params[:session][:password])
+  		log_in(@user)
+      params[:session][:remember_me] == '1' ? remember(@user) : forget(@user)
+      redirect_to current_user	
   	else
   		flash.now[:danger] = "You are not logged in"
   		render 'new'
@@ -18,9 +16,9 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    user = User.find_by(id: session[:user_id])
-    log_out
+  #   user = User.find_by(id: session[:user_id])
+    log_out if logged_in?
     redirect_to root_url
-    flash[:success] = "#{user.name} is logged out"
+    # flash[:success] = "#{user.name} is logged out"
   end
 end
