@@ -53,7 +53,38 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
                                     user: { password:              "password",
                                             password_confirmation: "password",
                                             admin: true } }
-    assert_not @other_user.admin
+    assert_not @other_user.reload.admin
+  end
+
+  test "should only allow logged in admins to delete users" do
+
+    delete user_path(@other_user)
+    assert_not flash.empty?
+    assert_redirected_to login_url
+    log_in_as(@other_user)
+    delete user_path(@user)
+    assert_redirected_to root_url
+
+
+  end
+
+  #We need to check two cases: first, users who aren’t logged in should be redirected to the login page; second, users who are logged in but who aren’t admins should be redirected to the Home page.
+
+  #beter in twee delen:
+
+  test "should redirect destroy when not logged in" do
+    assert_no_difference 'User.count' do
+      delete user_path(@other_user)
+    end
+    assert_redirected_to login_url
+  end
+
+  test "should redirect destroy when logged in as a non-admin" do
+    log_in_as(@other_user)
+    assert_no_difference 'User.count' do
+      delete user_path(@user)
+    end
+    assert_redirected_to root_url
   end
 
 
