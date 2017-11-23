@@ -14,6 +14,22 @@ archer:
   activated: true
   activated_at: <%=Time.zone.now %>
 
+lana:
+  name: Lana Ley
+  email: lana@ley.com
+  password_digest: <%= User.digest('password')%>
+  admin: false
+  activated: true
+  activated_at: <%=Time.zone.now %>
+
+malory:
+  name: Malory May
+  email: malory@may.com
+  password_digest: <%= User.digest('password')%>
+  admin: false
+  activated: true
+  activated_at: <%=Time.zone.now %>
+
 <% 30.times do |n| %>
 user_<%= n %>:
   name:  <%= "User #{n}" %>
