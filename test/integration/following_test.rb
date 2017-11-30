@@ -6,6 +6,7 @@ class FollowingTest < ActionDispatch::IntegrationTest
     @user = users(:michael)
     log_in_as(@user)
     @other = users(:archer)
+    @followed = users(:lana)
   end
 
   test "following page" do
@@ -35,6 +36,13 @@ class FollowingTest < ActionDispatch::IntegrationTest
   test "follow with ajax" do
     assert_difference '@user.following.count', 1 do
       post relationships_path, params: { followed_id: @other.id }, xhr: true
+    end
+  end
+
+  test "feed on Home page" do
+    get root_path
+    @user.feed.paginate(page: 1).each do |micropost|
+      assert_match CGI.escapeHTML(@followed.microposts.last.content.to_s), response.body
     end
   end
   
